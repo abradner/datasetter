@@ -1,0 +1,14 @@
+**/__pycache__
+**/*.pyc
+gitref
+secrets-*.env
+
+venv/
+.vscode/
+.idea/
+
+/.pytest_cache
+
+app/datasets/*.pkl
+
+**/.ipynb_checkpoints/
