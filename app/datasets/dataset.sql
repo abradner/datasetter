@@ -15,9 +15,9 @@ select listings.id
     , max_travel_distance_meters
     , display_name as location_display_name
 
-from "PROD"."RAW_LISTINGS_PUBLIC".LISTINGS as listings
+from {data_path}.LISTINGS as listings
 
-left join prod.raw_listings_public.locations
+left join {data_path}.locations
 on locations.id = listings.location_id
 
 where 1=1

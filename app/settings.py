@@ -2,6 +2,7 @@ from os import path
 
 from pydantic import BaseModel, BaseSettings
 
+# Create an algolia free account and plug in your details here
 class Algolia(BaseModel):
     app_id = 'CHANGE'
     admin_api_key = 'CHANGE'
@@ -9,6 +10,7 @@ class Algolia(BaseModel):
 
     max_records = 9990
 
+# Plug in your snowflake details here
 class Snowflake(BaseModel):
     user='CHANGE'
     password='CHANGE'
@@ -20,6 +22,7 @@ class Snowflake(BaseModel):
 class Dataset(BaseModel):
     max_num_records = 200000  # 200 Thousand
     primary_key = 'id'
+    data_path = 'CHANGE'
 
 class FileSystem(BaseModel):
     file_dir = path.dirname(path.realpath(__file__))

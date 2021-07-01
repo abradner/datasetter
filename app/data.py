@@ -11,11 +11,13 @@ DATASETS_DIR = settings.file_system.datasets_path
 DATASET_FNAME = settings.file_system.dataset_sql
 MAX_NUM_RECORDS = settings.dataset.max_num_records
 PRIMARY_KEY = settings.dataset.primary_key
+DATA_PATH = settings.dataset.data_path
+
 
 def load_dataset():
 
     # Fetch the dataset stored in row format.
-    raw_data = _fetch_data(DATASET_FNAME, max_record_count=MAX_NUM_RECORDS)
+    raw_data = _fetch_data(DATASET_FNAME, data_path=DATA_PATH, max_record_count=MAX_NUM_RECORDS)
 
     _validate_data(raw_data)
 

@@ -28,17 +28,7 @@ def generate_boundary_filters(lat, lon):
 
 
 def benchmark_searches(client: AlgoliaClient) -> pd.DataFrame:
-    results = do_benchmark(client)
-
-    df = pd.DataFrame(
-        {
-            "boundary_times": results[0],
-            "boundary_hits": results[1],
-            
-            "geohash_times": results[2],
-            "geohash_hits": results[3],
-        }
-    )
+    df = do_benchmark(client)
 
     fname = f'{re.sub(":","_", datetime.datetime.now().replace(microsecond=0).isoformat())}.csv'
     df.to_csv(os.path.join(settings.file_system.benchmark_path, fname))
@@ -49,9 +39,11 @@ def do_benchmark(client: AlgoliaClient) -> Tuple[List,List,List,List]:
     logger.info("BENCHMARKING")
 
     boundary_times = []
+    boundary_processing_times = []
     boundary_hits = []
     
     geohash_times = []
+    geohash_processing_times = []
     geohash_hits = []
 
     points_list = sample(SYDNEY, len(SYDNEY))
@@ -84,6 +76,7 @@ def do_benchmark(client: AlgoliaClient) -> Tuple[List,List,List,List]:
 
         boundary_times.append(runtime)
         boundary_hits.append(result['nbHits'])
+        boundary_processing_times.append(result['processingTimeMS'])
 
 
     logger.info("BENCH: GEOHASH FILTERS")
@@ -102,6 +95,20 @@ def do_benchmark(client: AlgoliaClient) -> Tuple[List,List,List,List]:
 
         geohash_times.append(runtime)
         geohash_hits.append(result['nbHits'])
+        geohash_processing_times.append(result['processingTimeMS'])
 
-    return boundary_times, boundary_hits, geohash_times, geohash_hits
+
+    df = pd.DataFrame(
+        {
+            "boundary_times": boundary_times,
+            "boundary_processing_times": boundary_processing_times,
+            "boundary_hits": boundary_hits,
+
+            "geohash_times": geohash_times,
+            "geohash_processing_times": geohash_processing_times,
+            "geohash_hits": geohash_hits,
+        }
+    )
+
+    return df
 

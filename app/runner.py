@@ -1,3 +1,4 @@
+from .algolia_benchmark import benchmark_searches
 from .algolia_client import Client as AlgoliaClient
 from .boundaries_functions import calculate_boundaries
 from .data import DATASETS_DIR, load_dataset
