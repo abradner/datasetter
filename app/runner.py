@@ -1,5 +1,6 @@
 from .algolia_benchmark import benchmark_searches
 from .algolia_client import Client as AlgoliaClient
+from .algolia_functions import add_data_to_algolia
 from .boundaries_functions import calculate_boundaries
 from .data import DATASETS_DIR, load_dataset
 from .geohash_functions import create_geohash
@@ -15,12 +16,14 @@ settings = Settings()
 RAW_DATASET_FILE = os.path.join(DATASETS_DIR, "raw_dataset.pkl")
 PROCESSED_DATASET_FILE = os.path.join(DATASETS_DIR, f"processed_dataset_precision_{settings.geohash_precision}.pkl")
 
+
 def boundary_helper(row) -> pd.Series:
     data = calculate_boundaries(
             Point(row['latitude'], row['longitude']),
             row['max_travel_distance_meters']
         )
     return pd.Series(data=data, index=data.keys())
+
 
 def add_boundaries(df: pd.DataFrame) -> None:
     logger.info("Calculating boundaries")
@@ -41,31 +44,7 @@ def add_geohashes(df: pd.DataFrame) -> None:
         )
     , axis=1)
 
-def prepare_dataset_for_algolia(df: pd.DataFrame) -> dict:
-    dfc = df.rename(columns={"id": "objectID",}) # make a copy
-    dfc[['created_at', 'updated_at']] = dfc[['created_at', 'updated_at']].apply(pd.to_numeric)
-    return dfc.to_dict(orient="records")
 
-
-def add_data_to_algolia(client: AlgoliaClient, df: pd.DataFrame) -> None:
-    logger.info("Adding data to algolia")
-    data = prepare_dataset_for_algolia(df)
-
-    facet_attributes = [
-        'geohashes',
-        'max_lat',
-        'min_lat',
-        'max_lon',
-        'min_lon'
-    ]
-    
-    filter_attributes = list(map(lambda el: f"filterOnly({el})", facet_attributes))
-    
-    client.set_facets(filter_attributes)
-    client.push(data)
-
-
-    
 def prepare_records() -> pd.DataFrame:
     if os.path.isfile(PROCESSED_DATASET_FILE):
         logger.info('Processed Datafile already exists, loading file...')
@@ -87,6 +66,7 @@ def prepare_records() -> pd.DataFrame:
         # save datafile
         df.to_pickle(PROCESSED_DATASET_FILE)
     return df
+
 
 def index_records(algolia_client: AlgoliaClient) -> None:
     df = prepare_records()
