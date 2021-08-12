@@ -9,6 +9,7 @@ venv/
 
 /.pytest_cache
 
-app/datasets/*.pkl
+app/caches/
+app/benchmarks/
 
 **/.ipynb_checkpoints/

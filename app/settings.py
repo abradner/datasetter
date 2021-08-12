@@ -4,31 +4,23 @@ from pydantic import BaseModel, BaseSettings
 
 # Create an algolia free account and plug in your details here
 class Algolia(BaseModel):
-    app_id = 'CHANGE'
-    admin_api_key = 'CHANGE'
     index = 'location_filtering_benchmark'
 
     max_records = 9990
 
 # Plug in your snowflake details here
 class Snowflake(BaseModel):
-    user='CHANGE'
-    password='CHANGE'
-    role='CHANGE'
-    account='CHANGE'
-    warehouse='CHANGE'
-    database='CHANGE'
 
 class Dataset(BaseModel):
     max_num_records = 200000  # 200 Thousand
     primary_key = 'id'
-    data_path = 'CHANGE'
+    main_data_path = 'CHANGE'
 
 class FileSystem(BaseModel):
     file_dir = path.dirname(path.realpath(__file__))
     benchmark_path = path.join(file_dir, 'benchmarks')
     datasets_path = path.join(file_dir, "datasets")
-    dataset_sql = path.join(datasets_path, "dataset.sql")
+    caches_path = path.join(file_dir, "caches")
 
 class Settings(BaseSettings):
     """
